@@ -72,8 +72,8 @@ app.use("/upost", updateRouter);
 app.use("/mail", mailRouter);
 app.use("/meta", metaRouter);
 
-server = app.listen(80, () => {
+const server = app.listen(80, () => {
   console.log("서버 실행중..");
 });
 
-//webSocket(server, app);
+webSocket(server, app);
