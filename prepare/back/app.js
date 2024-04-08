@@ -70,11 +70,11 @@ app.use((err, req, res, next) => {
   // 에러가 났을경우 보여주는 페이지
 });
 
-const server = app.listen(80, () => {
+server = app.listen(80, () => {
   console.log("서버 실행중..");
 });
 
-webSocket(server, app);
+//webSocket(server, app);
 
 /**
  * app.get -> 가져오다
