@@ -18,6 +18,8 @@ const metaRouter = require("./routes/meta");
 const db = require("./models");
 const passportConfig = require("./passport");
 
+const webSocket = require("./socket");
+
 dotenv.config();
 const app = express();
 db.sequelize
@@ -65,6 +67,8 @@ app.use("/upost", updateRouter);
 app.use("/mail", mailRouter);
 app.use("/meta", metaRouter);
 
-app.listen(3065, () => {
-  console.log("서버 실행 중!");
+const server = app.listen(80, () => {
+  console.log("서버 실행중..");
 });
+
+webSocket(server, app);
