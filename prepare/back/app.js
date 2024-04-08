@@ -4,6 +4,8 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const hpp = require("hpp");
+const helmet = require("helmet");
 
 const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
@@ -26,9 +28,15 @@ db.sequelize
   .catch(console.error);
 passportConfig();
 
+if (process.env.NODE_ENV === "production") {
+  app.use(hpp());
+  app.use(helmet());
+} else {
+}
+
 app.use(
   cors({
-    origin: "http://localhost:3060",
+    origin: ["http://localhost:3060", "zepmetaverse.com"],
     credentials: true,
   })
 );
