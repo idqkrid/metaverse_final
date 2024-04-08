@@ -1,4 +1,4 @@
 node_modules
 .env
 .next
-metaverse_service.pem
+finalKey.pem
