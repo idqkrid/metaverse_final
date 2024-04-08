@@ -34,6 +34,8 @@ const BlogImpormation = () => {
 
   useEffect(() => {
     console.log(me?.id);
+    console.log("blog 데이터");
+    console.log(mainPosts);
   });
 
   // useEffect(() => {
