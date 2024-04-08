@@ -1,22 +1,25 @@
-const { sequelize } = require("./index.js");
+const DataTypes = require("sequelize");
+const { Model } = DataTypes;
 
-module.exports = (sequelize, DataTypes) => {
-  const image = sequelize.define(
-    "image",
-    {
-      src: {
-        type: DataTypes.STRING(1000),
-        allowNull: false,
+module.exports = class Image extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        src: {
+          type: DataTypes.STRING(200),
+          allowNull: false,
+        },
       },
-    },
-    {
-      charset: "utf8mb4",
-      collate: "utf8mb4_general_ci", // 이모티콘 저장
-    }
-  );
-  image.associate = (db) => {
-    db.image.belongsTo(db.post); // 이미지는 어떤 게시글에 속해있다.
-  };
-
-  return image;
-}
+      {
+        modelName: "Image",
+        tableName: "images",
+        charset: "utf8mb4",
+        collate: "utf8mb4_general_ci",
+        sequelize,
+      }
+    );
+  }
+  static associate(db) {
+    db.Image.belongsTo(db.Post);
+  }
+};

@@ -4,15 +4,15 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 
-// const postRouter = require('./routes/post')
-// const userRouter = require('./routes/user');
-// const postsRouter = require('./routes/posts')
-// const noticeRouter = require('./routes/notice')
-// const updateRouter = require('./routes/upost')
-// const mailRouter = require('./routes/mail')
-// const metaRouter = require('./routes/meta');
+const postRouter = require("./routes/post");
+const userRouter = require("./routes/user");
+const postsRouter = require("./routes/posts");
+const noticeRouter = require("./routes/notice");
+const updateRouter = require("./routes/upost");
+const mailRouter = require("./routes/mail");
+const metaRouter = require("./routes/meta");
 
-// const db = require("./models");
+const db = require("./models");
 const passportConfig = require("./passport");
 const passport = require("passport");
 const dotenv = require("dotenv");
@@ -22,17 +22,17 @@ const webSocket = require("./socket");
 dotenv.config();
 const app = express();
 
-// db.sequelize
-//   .sync({ alter: true })
-//   .then(() => {
-//     console.log("db 연결 성공");
-//   })
-//   .catch(console.error);
-// passportConfig();
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch(console.error);
+passportConfig();
 
 app.use(
   cors({
-    origin: "http://localhost:3060",
+    origin: ["http://localhost:3060", "http://zepmetaverse.com"],
     credentials: true, // 쿠키를 같이 전달하고 싶으면 true
     webSocket: true,
   })
@@ -48,6 +48,11 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      domain: process.env.NODE_ENV === "production" && ".zepmetaverse.com",
+    },
   })
 );
 app.use(passport.initialize());
@@ -57,24 +62,24 @@ app.get("/", (req, res) => {
   res.send("hello express");
 });
 
-// app.use('/post', postRouter);
-// app.use('/posts', postsRouter);
-// app.use('/user', userRouter);
-// app.use('/notice', noticeRouter);
-// app.use('/upost', updateRouter);
-// app.use('/mail', mailRouter);
-// app.use('/meta', metaRouter);
+app.use("/post", postRouter);
+app.use("/posts", postsRouter);
+app.use("/user", userRouter);
+app.use("/notice", noticeRouter);
+app.use("/upost", updateRouter);
+app.use("/mail", mailRouter);
+app.use("/meta", metaRouter);
 
 // next(err) 인경우 실행
 app.use((err, req, res, next) => {
   // 에러가 났을경우 보여주는 페이지
 });
 
-server = app.listen(80, () => {
+const server = app.listen(80, () => {
   console.log("서버 실행중..");
 });
 
-//webSocket(server, app);
+webSocket(server, app);
 
 /**
  * app.get -> 가져오다

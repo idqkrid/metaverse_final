@@ -1,18 +1,34 @@
 const Sequelize = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config')[env];
+const comment = require("./comment");
+const image = require("./image");
+const meta = require("./meta");
+const notice = require("./notice");
+const post = require("./post");
+const upost = require("./upost");
+const user = require("./user");
+
+const env = process.env.NODE_ENV || "development";
+const config = require("../config/config")[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
 
-db.comment = require("./comment")(sequelize, Sequelize);
-db.hashtag = require("./hashtag")(sequelize, Sequelize);
-db.image = require("./image")(sequelize, Sequelize);
-db.post = require("./post")(sequelize, Sequelize);
-db.user = require("./user")(sequelize, Sequelize);
-db.notice = require("./notice")(sequelize, Sequelize);
-db.upost = require("./upost")(sequelize, Sequelize);
-db.meta = require("./meta")(sequelize, Sequelize);
+db.Comment = comment;
+db.Image = image;
+db.Post = post;
+db.User = user;
+db.Notice = notice;
+db.Upost = upost;
+db.Meta = meta;
+
+Object.keys(db).forEach((modelName) => {
+  db[modelName].init(sequelize);
+});
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
