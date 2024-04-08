@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(
   cors({
-    origin: ["http://localhost:3060", "zepmetaverse.com"],
+    origin: ["http://localhost:3060", "zepmetaverse.com", "http://3.39.25.162"],
     credentials: true,
   })
 );
