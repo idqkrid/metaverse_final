@@ -38,8 +38,13 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(
   cors({
-    origin: ["http://localhost:3060", "zepmetaverse.com", "http://3.39.25.162"],
+    origin: ["http://localhost:3060", "http://zepmetaverse.com"],
     credentials: true,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      domain: process.env.NODE_ENV === "production" && ".zepmetaverse.com",
+    },
   })
 );
 app.use(express.json());
