@@ -16,34 +16,27 @@ router.get('/', async (req, res, next) => { // GET /posts
       where,
       limit: 8,
       order: [
-        ['createdAt', 'DESC'],
-        [Comment, 'createdAt', 'DESC'],
+        ["createdAt", "DESC"],
+        [Comment, "createdAt", "DESC"],
       ],
-      include: [{
-        model: User,
-        attributes: ['id', 'nickname'],
-      }, {
-        model: Image,
-      }, {
-        model: Comment,
-        include: [{
+      include: [
+        {
           model: User,
-          attributes: ['id', 'nickname'],
-        }],
-      }, {
-        model: User, // 좋아요 누른 사람
-        as: 'Likers',
-        attributes: ['id'],
-      }, {
-        model: Post,
-        as: 'Retweet',
-        include: [{
-          model: User,
-          attributes: ['id', 'nickname'],
-        }, {
+          attributes: ["id", "nickname"],
+        },
+        {
           model: Image,
-        }]
-      }],
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
     });
     console.log(posts);
     res.status(200).json(posts);
@@ -59,34 +52,27 @@ router.get('/blog', async (req, res, next) => { // GET /posts
     const posts = await Post.findAll({
       limit: 4,
       order: [
-        ['createdAt', 'ASC'],
-        [Comment, 'createdAt', 'DESC'],
+        ["createdAt", "ASC"],
+        [Comment, "createdAt", "DESC"],
       ],
-      include: [{
-        model: User,
-        attributes: ['id', 'nickname'],
-      }, {
-        model: Image,
-      }, {
-        model: Comment,
-        include: [{
+      include: [
+        {
           model: User,
-          attributes: ['id', 'nickname'],
-        }],
-      }, {
-        model: User, // 좋아요 누른 사람
-        as: 'Likers',
-        attributes: ['id'],
-      }, {
-        model: Post,
-        as: 'Retweet',
-        include: [{
-          model: User,
-          attributes: ['id', 'nickname'],
-        }, {
+          attributes: ["id", "nickname"],
+        },
+        {
           model: Image,
-        }]
-      }],
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
     });
     console.log(posts);
     res.status(200).json(posts);

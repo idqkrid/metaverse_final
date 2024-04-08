@@ -13,23 +13,17 @@ router.get('/', async (req, res, next) => {
   try {
     if (req.user) {
       const fullUserWithoutPassword = await User.findOne({
-        where: {id: req.user.id},
+        where: { id: req.user.id },
         attributes: {
-          exclude: ['password']
+          exclude: ["password"],
         },
-        include: [{
-          model: Post,
-          attributes: ['id'],
-        }, {
-          model: User,
-          as: 'Followings',
-          attributes: ['id'],
-          }, {
-          model: User,
-          as: 'Followers',
-          attributes: ['id'],
-        }]
-      })
+        include: [
+          {
+            model: Post,
+            attributes: ["id"],
+          },
+        ],
+      });
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json(null);
@@ -64,23 +58,17 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         return next(loginErr);
       }
       const fullUserWithoutPassword = await User.findOne({
-        where: {id: user.id},
+        where: { id: user.id },
         attributes: {
-          exclude: ['password']
+          exclude: ["password"],
         },
-        include: [{
-          model: Post,
-          attributes: ['id'],
-        }, {
-          model: User,
-          as: 'Followings',
-          attributes: ['id'],
-          }, {
-          model: User,
-            as: 'Followers',
-            attributes: ['id'],
-        }]
-      })
+        include: [
+          {
+            model: Post,
+            attributes: ["id"],
+          },
+        ],
+      });
       return res.status(200).json(fullUserWithoutPassword); // 성공하면 프론트에게 넘겨줌
     })
   })(req, res, next);

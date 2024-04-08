@@ -236,32 +236,25 @@ router.get('/:postId', async (req, res, next) => { // GET /post/1
     }
     const fullPost = await Post.findOne({
       where: { id: post.id },
-      include: [{
-        model: Post,
-        as: 'Retweet',
-        include: [{
+      include: [
+        {
           model: User,
-          attributes: ['id', 'nickname'],
-        }, {
+          attributes: ["id", "nickname"],
+        },
+        {
           model: Image,
-        }]
-      }, {
-        model: User,
-        attributes: ['id', 'nickname'],
-      }, {
-        model: User,
-        as: 'Likers',
-        attributes: ['id', 'nickname'],
-      }, {
-        model: Image,
-      }, {
-        model: Comment,
-        include: [{
-          model: User,
-          attributes: ['id', 'nickname'],
-        }],
-      }],
-    })
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
     res.status(200).json(fullPost);
   } catch (error) {
     console.error(error);
