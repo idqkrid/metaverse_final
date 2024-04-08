@@ -40,11 +40,6 @@ app.use(
   cors({
     origin: ["http://localhost:3060", "http://zepmetaverse.com"],
     credentials: true,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      domain: process.env.NODE_ENV === "production" && ".zepmetaverse.com",
-    },
   })
 );
 app.use(express.json());
@@ -55,6 +50,11 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      domain: process.env.NODE_ENV === "production" && ".zepmetaverse.com",
+    },
   })
 );
 app.use(passport.initialize());
