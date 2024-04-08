@@ -42,11 +42,11 @@ const BlogImpormation = () => {
   //   });
   // }, [dispatch])
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: LOAD_POSTS_REQUEST,
-  //   });
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch({
+      type: LOAD_POSTS_REQUEST,
+    });
+  }, [dispatch]);
 
   const addPostButton = useCallback((e) => {
     e.preventDefault();
