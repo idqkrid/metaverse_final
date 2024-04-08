@@ -5,7 +5,7 @@ import { io } from 'socket.io-client'
 /* redux */
 import { useSelector } from 'react-redux';
 
-import { backUrl } from "../config/config";
+import { backUrl } from "../../../config/config";
 
 const socket = io(backUrl, {
   transports: ["websocket"],

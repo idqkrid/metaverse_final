@@ -4,7 +4,7 @@ import styles from './styles.module.css';
 /* Router */
 import Router from 'next/router';
 
-import { backUrl } from "../config/config";
+import { backUrl } from "../../../config/config";
 
 const BlogCardForm = ({ post }) => {
   const blogCardFormClick = useCallback((e) => {

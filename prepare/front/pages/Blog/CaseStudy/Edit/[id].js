@@ -15,7 +15,7 @@ import { LOAD_POST_REQUEST } from '../../../../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../../../../reducers/user';
 import wrapper from '../../../../store/configureStore.js';
 
-import { backUrl } from "../config/config";
+import { backUrl } from "../../../../config/config";
 
 /* redux */
 import { END } from "redux-saga";

@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { backUrl } from "../config/config";
+import { backUrl } from "../../../config/config";
 
 const BlogImages = ({ images }) => {
   const [sliderData, setSliderData] = useState(images[0]);

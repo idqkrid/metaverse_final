@@ -12,7 +12,7 @@ let player;
 var othersprites = [];
 var others = [];
 
-import { backUrl } from "../config/config";
+import { backUrl } from "../../config/config";
 
 const socket = io(backUrl, {
   transports: ["websocket"],
