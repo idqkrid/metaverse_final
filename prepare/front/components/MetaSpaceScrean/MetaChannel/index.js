@@ -5,9 +5,10 @@ import { io } from 'socket.io-client'
 /* redux */
 import { useSelector } from 'react-redux';
 
+import { backUrl } from "../config/config";
 
-const socket = io('http://localhost:3065', {
-    transports: ['websocket'],
+const socket = io(backUrl, {
+  transports: ["websocket"],
 });
 
 const MetaChannel = ({username, room}) => {

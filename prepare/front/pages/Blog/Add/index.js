@@ -18,6 +18,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import BlogImpormationHeader from '../../../components/BlogScrean/BlogImpormation/BlogHeader';
 import FooterMain from '../../../components/MainScreen/FooterMain';
 
+import { backUrl } from "../config/config";
+
 import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_IMAGE,
@@ -114,38 +116,70 @@ const CaseStudy = () => {
           </div>
         </div>
         <div className={styles.board_wrap}>
-            <div className={styles.board_write_wrap}>
-                <div className={styles.board_write}>
-                    <div className={styles.title}>
-                      <input value={text} onChange={onChangeTitle} placeholder='제목을 입력해주세요'></input>
-                    </div>
-                    <div className={styles.cont}>
-                      <textarea placeholder="내용 입력해주세요" value={contents} onChange={onChangeText}></textarea>
-                    </div>
+          <div className={styles.board_write_wrap}>
+            <div className={styles.board_write}>
+              <div className={styles.title}>
+                <input
+                  value={text}
+                  onChange={onChangeTitle}
+                  placeholder="제목을 입력해주세요"
+                ></input>
+              </div>
+              <div className={styles.cont}>
+                <textarea
+                  placeholder="내용 입력해주세요"
+                  value={contents}
+                  onChange={onChangeText}
+                ></textarea>
+              </div>
+              <div>
+                <input
+                  type="file"
+                  name="image"
+                  multiple
+                  hidden
+                  ref={imageInput}
+                  onChange={onChangeImages}
+                />
+                <button
+                  className={styles.buttonWrap}
+                  onClick={onClickImageUpload}
+                >
+                  이미지 업로드
+                </button>
+              </div>
+              <div>
+                {imagePaths.map((v, i) => (
+                  <div key={v} style={{ display: "inline-block" }}>
+                    <img
+                      src={`${backUrl}/${v}`}
+                      style={{ width: "200px" }}
+                      alt={v}
+                    />
                     <div>
-                      <input type="file" name="image" multiple hidden ref={imageInput} onChange={onChangeImages} />
-                      <button className={styles.buttonWrap} onClick={onClickImageUpload}>이미지 업로드</button>
+                      <button onClick={onRemoveImage(i)}>제거</button>
                     </div>
-                    <div>
-                      {imagePaths.map((v, i) => (
-                        <div key={v} style={{ display: 'inline-block' }}>
-                          <img src={`http://localhost:3065/${v}`} style={{ width: '200px' }} alt={v} />
-                          <div>
-                            <button onClick={onRemoveImage(i)}>제거</button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                </div>
-                <div className={styles.bt_wrap}>
-                    <button className={styles.buttonWrap} type="primary" htmlType="submit" loading={addPostLoading} onClick={onAddPost}>등록</button>
-                </div>
+                  </div>
+                ))}
+              </div>
             </div>
+            <div className={styles.bt_wrap}>
+              <button
+                className={styles.buttonWrap}
+                type="primary"
+                htmlType="submit"
+                loading={addPostLoading}
+                onClick={onAddPost}
+              >
+                등록
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <FooterMain />
     </div>
-  )
+  );
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(async (context) => {

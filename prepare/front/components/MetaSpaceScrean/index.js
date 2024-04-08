@@ -10,10 +10,12 @@ import { io } from 'socket.io-client'
 let game;
 let player;
 var othersprites = [];
-var others = []; 
+var others = [];
 
-const socket = io('http://localhost:3065', {
-  transports: ['websocket'],
+import { backUrl } from "../config/config";
+
+const socket = io(backUrl, {
+  transports: ["websocket"],
 });
 
 const Meta = () => {
