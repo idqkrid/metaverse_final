@@ -1,8 +1,9 @@
-const express = require('express')
+const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const path = require("path");
+const passport = require("passport");
+const dotenv = require("dotenv");
 
 const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
@@ -14,14 +15,9 @@ const metaRouter = require("./routes/meta");
 
 const db = require("./models");
 const passportConfig = require("./passport");
-const passport = require("passport");
-const dotenv = require("dotenv");
-
-const webSocket = require("./socket");
 
 dotenv.config();
 const app = express();
-
 db.sequelize
   .sync()
   .then(() => {
@@ -32,27 +28,18 @@ passportConfig();
 
 app.use(
   cors({
-    origin: ["http://localhost:3060", "http://zepmetaverse.com"],
-    credentials: true, // 쿠키를 같이 전달하고 싶으면 true
-    webSocket: true,
+    origin: "http://localhost:3060",
+    credentials: true,
   })
 );
-
-app.use("/", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
-app.use(express.urlencoded({ extends: true })); // 프론트에서 보낸 데이터를 req.body 에다가 넣어주는 역할
-
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      domain: process.env.NODE_ENV === "production" && ".zepmetaverse.com",
-    },
   })
 );
 app.use(passport.initialize());
@@ -61,7 +48,7 @@ app.use(passport.session());
 app.get("/", (req, res) => {
   res.send("hello express");
 });
-
+// API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구
 app.use("/post", postRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
@@ -70,21 +57,6 @@ app.use("/upost", updateRouter);
 app.use("/mail", mailRouter);
 app.use("/meta", metaRouter);
 
-// next(err) 인경우 실행
-app.use((err, req, res, next) => {
-  // 에러가 났을경우 보여주는 페이지
+app.listen(3065, () => {
+  console.log("서버 실행 중!");
 });
-
-const server = app.listen(80, () => {
-  console.log("서버 실행중..");
-});
-
-webSocket(server, app);
-
-/**
- * app.get -> 가져오다
- * app.post -> 생성하다
- * app.put -> 전체 수정
- * app.delete -> 제거
- * app.patch -> 부분 수정 (ex: 사용자 정보 수정할때 닉네임만 수정할때)
- */
