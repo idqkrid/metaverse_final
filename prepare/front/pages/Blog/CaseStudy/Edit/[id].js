@@ -210,7 +210,7 @@ const CaseStudy = () => {
               <div className={styles.imageSpace}>
                 {singlePost?.Images.map((v, i) => (
                   <div key={v} style={{ display: "inline-block" }}>
-                    <img src={v} style={{ width: "200px" }} alt={v} />
+                    <img src={v.src} style={{ width: "200px" }} alt={v} />
                     <div>
                       <button
                         className={styles.buttonWrap}
