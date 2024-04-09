@@ -3,38 +3,52 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const { Post, Image, Comment, User } = require('../models');
-const {isLoggedIn} = require('./middlewares')
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
+
+const { Post, Image, Comment, User } = require("../models");
+const { isLoggedIn } = require("./middlewares");
 
 const router = express.Router();
 
 try {
-  fs.accessSync('uploads')
+  fs.accessSync("uploads");
 } catch (error) {
-  console.log('uploads 폴더가 없으므로 생성합니다.')
-  fs.mkdirSync('uploads')
+  console.log("uploads 폴더가 없으므로 생성합니다.");
+  fs.mkdirSync("uploads");
 }
 
+const { S3Client } = require("@aws-sdk/client-s3");
+const s3Client = new S3Client({
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  },
+  region: "ap-northeast-2",
+});
 const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, 'uploads');
-    },
-    filename(req, file, done) { // 제로초.png
-      const ext = path.extname(file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext); // 제로초
-      done(null, basename + '_' + new Date().getTime() + ext); // 제로초15184712891.png
+  storage: multerS3({
+    // s3: new AWS.S3(),
+    s3: s3Client,
+    bucket: "metaversefinal",
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
     },
   }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  limits: { fileSize: 20 * 1024 * 1024 }, //20MB
 });
 
+// 이미지 추가 array , single , none
+router.post("/images", isLoggedIn, upload.array("image"), (req, res, next) => {
+  //POST /post/images
+  res.json(req.files.map((v) => v.location));
+});
 
 // 게시글 추가
-router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
+router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
-    console.log('게시글 전송!')
-    console.log(req.body.text)
+    console.log("게시글 전송!");
+    console.log(req.body.text);
 
     const post = await Post.create({
       title: req.body.text,
@@ -42,41 +56,45 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
       UserId: req.user.id,
     });
     if (req.body.image) {
-      if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-        const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+      if (Array.isArray(req.body.image)) {
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image }))
+        );
         await post.addImages(images);
-      } else { // 이미지를 하나만 올리면 image: 제로초.png
+      } else {
+        // 이미지를 하나만 올리면 image: 제로초.png
         const image = await Image.create({ src: req.body.image });
         await post.addImages(image);
       }
     }
     const fullPost = await Post.findOne({
       where: { id: post.id },
-      include: [{
-        model: Image,
-      }, {
-        model: Comment,
-        include: [{
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
           model: User,
-          attributes: ['id', 'nickname'],
-        }]
-      }, {
-        model: User,
-        attributes: ['id', 'nickname'],
-      }]
-    })
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
 
     res.status(201).json(fullPost);
   } catch (error) {
     console.log(error);
     next(error);
   }
-})
-
-// 이미지 추가 array , single , none
-router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => { // POST /post/images
-  console.log(req.files);
-  res.json(req.files.map((v) => v.filename));
 });
 
 // 댓글 추가
